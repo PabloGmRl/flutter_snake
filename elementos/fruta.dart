@@ -43,16 +43,16 @@ class Fruta {
   void applyEffect(Serpiente snake) {
     switch (tipo) {
       case FrutaTipo.manzana:
-        snake.avanzar(crecer: true);
+        snake.crecer(1);
         break;
+        //Crece dos veces
       case FrutaTipo.fresa:
-      // p.ej. crece 2 veces
-        snake.avanzar(crecer: true);
-        snake.avanzar(crecer: true);
+        snake.crecer(2);
         break;
-    // más efectos en futuros case
     }
+    //Más efectos en futuros case
   }
+
 
 
   static Fruta random(int position) {

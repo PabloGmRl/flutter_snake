@@ -8,6 +8,7 @@ class Serpiente {
 
   List<int> _segmentos; // índices 0D de cada célula
   Direccion direccionActual;
+  int _pendienteDeCrecer = 0;//Contador para crecer
 
   Serpiente({
     required this.filas,
@@ -19,10 +20,13 @@ class Serpiente {
   List<int> get segmentos => List.unmodifiable(_segmentos);
 
   /// ④ Avanza realmente el modelo (ya sin más comprobaciones)
-  void avanzar({ bool crecer = false }) {
+  void avanzar() {
+    final crecer = _pendienteDeCrecer > 0;//Si el contador es mayor que 0 debe crecer
     final next = proximoSegmentos(crecer: crecer);
     _segmentos = next;
+    if (_pendienteDeCrecer > 0) _pendienteDeCrecer--;//Se descuenta porque ya ha crecido(va de 1 en 1)
   }
+
 
   /// ⑤ Impide giros de 180°
   void cambiarDireccion(Direccion nueva) {
@@ -70,5 +74,7 @@ class Serpiente {
     if (!crecer) next.removeAt(0);
     return next;
   }
-
+  void crecer(int cantidad) {
+    _pendienteDeCrecer += cantidad;
+  }
 }
