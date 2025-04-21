@@ -28,7 +28,7 @@ class _RejillaSnakeState extends State<RejillaSnake> with SingleTickerProviderSt
   final snake = Serpiente(filas: filas, columnas: columnas,initialSegments: [45, 65, 85],);
   late Fruta frutaActual;
   SnakeSkin skin = ClassicSkin();
-
+  bool _enPausa = false;
 
 
   @override
@@ -120,7 +120,15 @@ class _RejillaSnakeState extends State<RejillaSnake> with SingleTickerProviderSt
     final gridW = cellSize * columnas;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Snake')),
+      appBar: AppBar(
+        title: const Text('Snake'),
+        actions: [
+          IconButton(
+            icon: Icon(_enPausa ? Icons.play_arrow : Icons.pause),
+            onPressed: _togglePausa,
+          ),
+        ],
+      ),
       body: Column(
         children: [
 
@@ -191,6 +199,22 @@ class _RejillaSnakeState extends State<RejillaSnake> with SingleTickerProviderSt
                           ),
                         );
                       }),
+                    //3) Cartel de pausa
+                    if (_enPausa)
+                      Positioned.fill(
+                        child: Container(
+                          color: Colors.black54,
+                          alignment: Alignment.center,
+                          child: const Text(
+                            'En pausa',
+                            style: TextStyle(
+                              fontSize: 48,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -279,6 +303,16 @@ class _RejillaSnakeState extends State<RejillaSnake> with SingleTickerProviderSt
 
       // 3) Arrancar animación
       _controller.forward(from: 0.0);
+    });
+  }
+  void _togglePausa() {
+    setState(() {
+      if (_enPausa) {
+        _controller.forward();  // reanuda
+      } else {
+        _controller.stop(); //Para el juego
+      }
+      _enPausa = !_enPausa;
     });
   }
 }
