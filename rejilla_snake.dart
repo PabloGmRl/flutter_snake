@@ -18,19 +18,17 @@ class _RejillaSnakeState extends State<RejillaSnake> with SingleTickerProviderSt
   List<int> _oldSegments = [];
   List<int> _newSegments = [];
 
-  Direccion? direccionActual;
-  // Ajusta aquí tu tamaño de rejilla
+  List<int> _segmentosIniciales = [];
+  late int _longitudInicial;
+
+  //Tamaño del mapa
   static const int filas = 20;
   static const int columnas = 20;
   //el tamaño de la serpiente siempre es [ x , x+columnas] para que salga recta
-  final snake = SnakeModel(filas: filas, columnas: columnas,initialSegments: [45, 65, 85],);
-  int manzana = 123;
+  final snake = Serpiente(filas: filas, columnas: columnas,initialSegments: [45, 65, 85],);
+  late Fruta frutaActual;
   SnakeSkin skin = ClassicSkin();
 
-  Color obtenerColorCelda(int index) {
-    if (index == manzana) return Colors.red;
-    return Colors.grey[300]!; // fondo neutro
-  }
 
 
   @override
@@ -41,12 +39,17 @@ class _RejillaSnakeState extends State<RejillaSnake> with SingleTickerProviderSt
     _oldSegments = List.from(snake.segmentos);
     _newSegments = List.from(snake.segmentos);
 
+
     // 300ms para un paso completo
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
 
+    frutaActual = Fruta.random(_eligePosicionAleatoria());
+
+    _longitudInicial = snake.segmentos.length;
+    _segmentosIniciales = snake.segmentos;
     // Usamos una animación lineal 0→1
     _animation = Tween(begin: 0.0, end: 1.0).animate(_controller)
       ..addListener(() {
@@ -54,12 +57,29 @@ class _RejillaSnakeState extends State<RejillaSnake> with SingleTickerProviderSt
       })
       ..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
-          // 1) Terminó la interpolación: avanzamos la serpiente
+          // 1) Predigo la siguiente lista de segmentos
+          final candNext = snake.proximoSegmentos();
+
+          // 2) Si choco → Game Over sin mover la cabeza visualmente
+          if (snake.colisionaEn(candNext.last)) {
+            _controller.stop();
+            _mostrarGameOver();
+            return;
+          }
+
+          // 3) Commit del movimiento: actualizo old y new
           _oldSegments = List.from(_newSegments);
-          snake.avanzar();
+          snake.avanzar();                        // aplica candNext
           _newSegments = List.from(snake.segmentos);
 
-          // 2) Reiniciamos la animación
+          // 4) Chequeo “comer” fruta
+          if (snake.segmentos.last == frutaActual.position) {
+            frutaActual.applyEffect(snake);
+            frutaActual = Fruta.random(_eligePosicionAleatoria());
+            _newSegments = List.from(snake.segmentos);
+          }
+
+          // 5) Sigo animando
           _controller.forward(from: 0.0);
         }
       });
@@ -123,13 +143,17 @@ class _RejillaSnakeState extends State<RejillaSnake> with SingleTickerProviderSt
                         childAspectRatio: 1,
                       ),
                       itemBuilder: (context, index) {
-                        return Container(
-                          margin: const EdgeInsets.all(1),
-                          decoration: BoxDecoration(
-                            color: obtenerColorCelda(index),
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                        );
+                        if (index == frutaActual.position) {
+                          return frutaActual.buildWidget(cellSize);
+                        } else {
+                          return Container(
+                            margin: const EdgeInsets.all(1),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[300],
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          );
+                        }
                       },
                     ),
 
@@ -174,24 +198,14 @@ class _RejillaSnakeState extends State<RejillaSnake> with SingleTickerProviderSt
           ),
 
           GestureDetector(
-            onPanUpdate: (d) {
-              final dx = d.delta.dx;
-              final dy = d.delta.dy;
-              Direccion nueva = (dx.abs() > dy.abs())
-                  ? (dx > 0 ? Direccion.derecha : Direccion.izquierda)
-                  : (dy > 0 ? Direccion.abajo  : Direccion.arriba);
-
-              setState(() {
-                snake.cambiarDireccion(nueva);
-              });
-            },
+            onPanUpdate: cambiarDireccion,
             child: Container(
               height: hControlBox,
               width: wTot,
               color: Colors.blueGrey[900],
               child: Center(
                 child: Text(
-                  'Desliza para mover: ${direccionActual?.name ?? "ninguna"}',
+                  'Desliza para mover: ${snake.direccionActual.name}',
                   style: const TextStyle(color: Colors.white, fontSize: 18),
                 ),
               ),
@@ -205,13 +219,66 @@ class _RejillaSnakeState extends State<RejillaSnake> with SingleTickerProviderSt
   void cambiarDireccion(DragUpdateDetails d) {
     final dx = d.delta.dx;
     final dy = d.delta.dy;
+    final nueva = (dx.abs() > dy.abs())
+        ? (dx > 0 ? Direccion.derecha : Direccion.izquierda)
+        : (dy > 0 ? Direccion.abajo  : Direccion.arriba);
 
     setState(() {
-      if (dx.abs() > dy.abs()) {
-        direccionActual = (dx > 0) ? Direccion.derecha : Direccion.izquierda;
-      } else {
-        direccionActual = (dy > 0) ? Direccion.abajo   : Direccion.arriba;
-      }
+      snake.cambiarDireccion(nueva);
+    });
+  }
+
+  int _eligePosicionAleatoria() {
+    final total = filas * columnas;
+    int pos;
+    do {
+      pos = Random().nextInt(total);
+    } while (snake.segmentos.contains(pos));
+    return pos;
+  }
+
+  /// Muestra el diálogo de Game Over
+  void _mostrarGameOver() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => AlertDialog(
+        title: const Text('Game Over'),
+        content: Text('Puntuación: ${snake.segmentos.length - _longitudInicial}'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();   // cierra el diálogo
+              _reiniciarJuego();
+            },
+            child: const Text('Reiniciar'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();   // cierra el diálogo
+              Navigator.of(context).pop();   // vuelve al menú principal
+            },
+            child: const Text('Salir'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Reinicia el estado completo para volver a jugar
+  void _reiniciarJuego() {
+    setState(() {
+      // 1) Reset de la serpiente
+      snake.reset(_segmentosIniciales);
+      _oldSegments = List.from(snake.segmentos);
+      _newSegments = List.from(snake.segmentos);
+
+      // 2) Reset de fruta y puntuación
+      frutaActual = Fruta.random(_eligePosicionAleatoria());
+      _longitudInicial = snake.segmentos.length;
+
+      // 3) Arrancar animación
+      _controller.forward(from: 0.0);
     });
   }
 }
