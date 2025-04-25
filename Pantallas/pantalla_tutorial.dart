@@ -8,11 +8,7 @@ class PantallaTutorial extends StatelessWidget {
   Future<void> _onStartPressed(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('seenSplash', true);
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => const SnakePaginaPrincipal(titulo: 'Snake'),
-      ),
-    );
+    Navigator.pop(context);
   }
 
   @override
