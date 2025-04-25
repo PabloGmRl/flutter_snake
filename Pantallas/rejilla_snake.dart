@@ -125,6 +125,36 @@ class _RejillaSnakeState extends State<RejillaSnake> with SingleTickerProviderSt
 
     return Scaffold(
       appBar: AppBar(
+        leadingWidth: 140, // MÁS espacio reservado
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: Align(
+            alignment: Alignment.centerLeft, // Botón pegado a la izquierda
+            child: SizedBox(
+              width: 90,  // Botón más pequeño
+              height: 42,  // Botón más delgadito
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.redAccent,
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6.0),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text(
+                  'Cancelar',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
         title: const Text('Snake'),
         actions: [
           IconButton(
@@ -133,6 +163,12 @@ class _RejillaSnakeState extends State<RejillaSnake> with SingleTickerProviderSt
           ),
         ],
       ),
+
+
+
+
+
+
       body: Column(
         children: [
 
