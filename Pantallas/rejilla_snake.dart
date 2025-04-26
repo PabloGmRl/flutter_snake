@@ -58,31 +58,30 @@ class _RejillaSnakeState extends State<RejillaSnake> with SingleTickerProviderSt
       })
       ..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
-          // 1) Predigo la siguiente lista de segmentos
+          // 🔥 Aplicamos dirección pendiente ANTES de predecir el próximo movimiento
+          snake.aplicarDireccionPendiente();
+
           final candNext = snake.proximoSegmentos();
 
-          // 2) Si choco → Game Over sin mover la cabeza visualmente
           if (snake.colisionaEn(candNext.last)) {
             _controller.stop();
             _mostrarGameOver();
             return;
           }
 
-          // 3) Commit del movimiento: actualizo old y new
           _oldSegments = List.from(_newSegments);
-          snake.avanzar();                        // aplica candNext
+          snake.avanzar();
           _newSegments = List.from(snake.segmentos);
 
-          // 4) Chequeo “comer” fruta
           if (snake.segmentos.last == frutaActual.position) {
             frutaActual.applyEffect(snake);
             frutaActual = Fruta.random(_eligePosicionAleatoria());
             _newSegments = List.from(snake.segmentos);
           }
 
-          // 5) Sigo animando
           _controller.forward(from: 0.0);
         }
+
       });
 
     // Arrancamos el loop
