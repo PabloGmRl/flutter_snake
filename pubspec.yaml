@@ -1,0 +1,37 @@
+name: flutter_snake
+description: Una versión de Snake en Flutter
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.18.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  provider: ^6.1.0
+  swipe: ^0.0.1
+  path_provider: ^2.0.15
+  shared_preferences: ^2.1.1
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/serpiente/cabeza_abajo.png
+    - assets/serpiente/cabeza_arriba.png
+    - assets/serpiente/cabeza_derecha.png
+    - assets/serpiente/cabeza_izquierda.png
+    - assets/serpiente/cola_abajo.png
+    - assets/serpiente/cola_arriba.png
+    - assets/serpiente/cola_derecha.png
+    - assets/serpiente/cola_izquierda.png
+    - assets/serpiente/cuerpo_arriba_abajo.png
+    - assets/serpiente/cuerpo_der_izq.png
+    - assets/serpiente/giro_izq_abajo.png
+    - assets/serpiente/giro_abajo_izq.png
+    - assets/serpiente/giro_izq_arriba.png
+    - assets/serpiente/giro_der_abajo.png
+    - assets/frutas/fresa.png
+    - assets/frutas/manzana.png
+    - assets/frutas/poison.png
