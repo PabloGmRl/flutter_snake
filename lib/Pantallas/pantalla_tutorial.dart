@@ -3,7 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_snake/snake_pagina_principal.dart'; // ajusta la ruta si hace falta
 
 class PantallaTutorial extends StatefulWidget {
-  const PantallaTutorial({Key? key}) : super(key: key);
+  final bool desdePrincipal;
+  const PantallaTutorial({Key? key,this.desdePrincipal=false}) : super(key: key);
 
   @override
   State<PantallaTutorial> createState() => _PantallaTutorialState();
@@ -44,10 +45,15 @@ class _PantallaTutorialState extends State<PantallaTutorial> {
   Future<void> _onStartPressed() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('seenSplash', true);
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const SnakePaginaPrincipal(titulo: 'Flutter Snake')),
-    );
+    if(!widget.desdePrincipal) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const SnakePaginaPrincipal(
+            titulo: 'Flutter Snake')),
+      );
+    }else{
+      Navigator.pop(context);
+    }
   }
 
   @override
