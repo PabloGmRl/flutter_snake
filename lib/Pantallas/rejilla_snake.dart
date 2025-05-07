@@ -4,6 +4,7 @@ import 'package:flutter_snake/elementos/elementos.dart';
 import 'dart:async';
 import 'package:flutter_snake/almacenamiento_resultados.dart';
 import 'package:flutter_snake/preferencias.dart';
+import 'package:flutter_snake/audio_manager.dart';
 
 class RejillaSnake extends StatefulWidget {
   const RejillaSnake({Key? key}) : super(key: key);
@@ -71,6 +72,16 @@ class _RejillaSnakeState extends State<RejillaSnake> with SingleTickerProviderSt
         snake.avanzar();
         _newSegments = List.from(snake.segmentos);
 
+        //Comprobamos Si hay Victoria
+
+        final totalCeldas = filas * columnas;
+              if (snake.segmentos.length == totalCeldas) {
+                // toca sonido de victoria y abre diálogo
+                   AudioManager.playWinSound();
+                _controller.stop();
+                _mostrarVictoria();
+                return;
+              }
         // 4) AHORA sí miramos si la cabeza ha comido fruta
         final cabeza = snake.segmentos.last;
         for (final f in [...manzanas, ...fresas, ...poisons]) {
@@ -78,6 +89,7 @@ class _RejillaSnakeState extends State<RejillaSnake> with SingleTickerProviderSt
             try {
               // ─── Aquí encogemos O crecemos, PERO tras avanzar ───
               f.applyEffect(snake);
+              AudioManager.playEatSound();
               final diferencia = _oldSegments.length - snake.segmentos.length;
               if (diferencia > 0) {
                 //Recorta también los segmentos anteriores desde la cabeza
@@ -364,6 +376,7 @@ class _RejillaSnakeState extends State<RejillaSnake> with SingleTickerProviderSt
   }
 
   Future<void> _mostrarGameOver() async {
+    AudioManager.playLoseSound();
     final score = snake.segmentos.length;
     await AlmacenamientoResultados.addScore(score);
     showDialog(
@@ -397,5 +410,34 @@ class _RejillaSnakeState extends State<RejillaSnake> with SingleTickerProviderSt
         ? (dx > 0 ? Direccion.derecha : Direccion.izquierda)
         : (dy > 0 ? Direccion.abajo   : Direccion.arriba);
     setState(() => snake.cambiarDireccion(nueva));
+    AudioManager.playMoveSound();
   }
+
+  void _mostrarVictoria() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => AlertDialog(
+        title: const Text('¡Victoria!'),
+        content: const Text('Has llenado todo el tablero.'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              _reiniciarJuego();
+            },
+            child: const Text('Reiniciar'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+            },
+            child: const Text('Salir'),
+          ),
+        ],
+      ),
+    );
+  }
+
 }

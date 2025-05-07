@@ -13,6 +13,7 @@ dependencies:
   swipe: ^0.0.1
   path_provider: ^2.0.15
   shared_preferences: ^2.1.1
+  audioplayers: ^5.2.1
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
@@ -35,11 +36,12 @@ flutter:
     - assets/serpiente/cola_derecha.png
     - assets/serpiente/cola_izquierda.png
     - assets/serpiente/cuerpo_arriba_abajo.png
-    - assets/serpiente/cuerpo_der_izq.png
-    - assets/serpiente/giro_izq_abajo.png
-    - assets/serpiente/giro_abajo_izq.png
-    - assets/serpiente/giro_izq_arriba.png
-    - assets/serpiente/giro_der_abajo.png
     - assets/frutas/fresa.png
     - assets/frutas/manzana.png
     - assets/frutas/poison.png
+    - assets/Snake_logo.png
+    - assets/velocidad.png
+    - assets/sonidos/food.mp3
+    - assets/sonidos/gameover.mp3
+    - assets/sonidos/move.mp3
+    - assets/sonidos/victoria.wav

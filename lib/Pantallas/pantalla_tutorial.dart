@@ -16,27 +16,25 @@ class _PantallaTutorialState extends State<PantallaTutorial> {
 
   final List<_TutorialPage> _pages = [
     _TutorialPage(
-      image: 'assets/tutorial/welcome.png',
+      image: 'assets/Snake_logo.png',
       title: '¡Bienvenido a Flutter Snake!',
       description: 'Desliza para descubrir los modos de juego y sus reglas.',
     ),
     _TutorialPage(
-      image: 'assets/tutorial/muy_facil.png',
       title: 'Modo Muy Fácil',
       description: '¡Sin muros! Cruza los bordes y reaparecerás al otro lado.',
     ),
     _TutorialPage(
-      image: 'assets/tutorial/facil.png',
       title: 'Modo Fácil',
       description: 'Juego clásico: muros sólidos, velocidad constante.',
     ),
     _TutorialPage(
-      image: 'assets/tutorial/normal.png',
+      image: 'assets/velocidad.png',
       title: 'Modo Normal',
       description: 'La velocidad aumenta cada vez que comes fruta.',
     ),
     _TutorialPage(
-      image: 'assets/tutorial/dificil.png',
+      image: 'assets/frutas/poison.png',
       title: 'Modo Difícil',
       description: 'Como Normal, más 3 frutas poison que encogen la serpiente.',
     ),
@@ -72,7 +70,7 @@ class _PantallaTutorialState extends State<PantallaTutorial> {
                 height: double.infinity,
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Colors.green, Colors.greenAccent],
+                    colors: [Colors.white, Colors.white],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                   ),
@@ -94,7 +92,7 @@ class _PantallaTutorialState extends State<PantallaTutorial> {
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: 28,
-                          color: Colors.white,
+                          color: Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -104,7 +102,7 @@ class _PantallaTutorialState extends State<PantallaTutorial> {
                         child: Text(
                           page.description,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 18, color: Colors.white70),
+                          style: const TextStyle(fontSize: 18, color: Colors.black),
                         ),
                       ),
                     ],
@@ -127,7 +125,7 @@ class _PantallaTutorialState extends State<PantallaTutorial> {
                   width: _paginaActual == i ? 16 : 8,
                   height: 8,
                   decoration: BoxDecoration(
-                    color: _paginaActual == i ? Colors.white : Colors.white54,
+                    color: _paginaActual == i ? Colors.black : Colors.black,
                     borderRadius: BorderRadius.circular(4),
                   ),
                 );

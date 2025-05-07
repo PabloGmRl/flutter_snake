@@ -50,7 +50,7 @@ class PixelArtSkin extends SnakeSkin {
       );
     }
 
-    // ─── 2) Cola ──────────────────────────────────────────────────────────────
+// ─── 2) Cola ──────────────────────────────────────────────────────────────
     final tailIndex = segmentos.first;
     if (index == tailIndex && segmentos.length > 1) {
       final next = segmentos[1];
@@ -65,24 +65,24 @@ class PixelArtSkin extends SnakeSkin {
       );
     }
 
-    // ─── 3) Cuerpo ────────────────────────────────────────────────────────────
-    // Localiza la posición en la lista de segmentos
+// ─── 3) Cuerpo ────────────────────────────────────────────────────────────
     final i = segmentos.indexOf(index);
     final prev = segmentos[i - 1];
     final next = segmentos[i + 1];
 
-    // Dirección desde este segmento hacia prev y next
     Direccion dirPrev = _directionBetween(index, prev);
     Direccion dirNext = _directionBetween(index, next);
 
-    // Si está en línea recta horizontal o vertical
+// Si está en línea recta horizontal
     if ((dirPrev == Direccion.izquierda && dirNext == Direccion.derecha) ||
         (dirPrev == Direccion.derecha && dirNext == Direccion.izquierda)) {
       return Image.asset(
-        'assets/serpiente/cuerpo_der_izq.png',
+        'assets/serpiente/cuerpo_arriba_abajo.png',
         width: cellSize, height: cellSize, fit: BoxFit.contain,
       );
     }
+
+// Si está en línea recta vertical
     if ((dirPrev == Direccion.arriba && dirNext == Direccion.abajo) ||
         (dirPrev == Direccion.abajo && dirNext == Direccion.arriba)) {
       return Image.asset(
@@ -91,34 +91,9 @@ class PixelArtSkin extends SnakeSkin {
       );
     }
 
-    // ─── 4) Esquina ───────────────────────────────────────────────────────────
-    // Construimos el nombre del asset según la pareja de direcciones
-    final cornerDirs = { dirPrev, dirNext};
-    final cornerName;
-
-    if (cornerDirs.containsAll({ Direccion.abajo, Direccion.izquierda})) {
-      // incoming desde abajo y salida a la izquierda
-      cornerName = 'giro_der_abajo';
-    }
-    else if (cornerDirs.containsAll({ Direccion.abajo, Direccion.derecha})) {
-      // incoming desde la derecha y salida abajo
-      cornerName = 'giro_izq_abajo';
-    }
-    else if (cornerDirs.containsAll({ Direccion.izquierda, Direccion.arriba})) {
-      // incoming desde arriba y salida a la izquierda
-      cornerName = 'giro_abajo_izq';
-    }
-    else if (cornerDirs.containsAll({ Direccion.arriba, Direccion.derecha})) {
-      // incoming desde la derecha y salida arriba
-      cornerName = 'giro_izq_arriba';
-    }
-    else {
-      // por si acaso
-      cornerName = 'cuerpo_der_izq';
-    }
-
+// Fallback por si ocurre algo inesperado
     return Image.asset(
-      'assets/serpiente/$cornerName.png',
+      'assets/serpiente/cuerpo_arriba_abajo.png',
       width: cellSize, height: cellSize, fit: BoxFit.contain,
     );
   }
