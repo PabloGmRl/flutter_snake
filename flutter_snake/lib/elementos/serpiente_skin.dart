@@ -42,7 +42,7 @@ class PixelArtSkin extends SnakeSkin {
   }) {
     final segmentos = snake.segmentos;
 
-    // ─── 1) Cabeza ─────────────────────────────────────────────────────────────
+    // 1) Cabeza
     if (isHead) {
       return Image.asset(
         'assets/serpiente/cabeza_${snake.direccionActual.name}.png',
@@ -50,7 +50,7 @@ class PixelArtSkin extends SnakeSkin {
       );
     }
 
-// ─── 2) Cola ──────────────────────────────────────────────────────────────
+// 2) Cola
     final tailIndex = segmentos.first;
     if (index == tailIndex && segmentos.length > 1) {
       final next = segmentos[1];
@@ -65,7 +65,7 @@ class PixelArtSkin extends SnakeSkin {
       );
     }
 
-// ─── 3) Cuerpo ────────────────────────────────────────────────────────────
+// 3) Cuerpo
     final i = segmentos.indexOf(index);
     final prev = segmentos[i - 1];
     final next = segmentos[i + 1];

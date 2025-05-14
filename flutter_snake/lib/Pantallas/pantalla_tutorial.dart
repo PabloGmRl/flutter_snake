@@ -133,7 +133,7 @@ class _PantallaTutorialState extends State<PantallaTutorial> {
             ),
           ),
 
-          // Botón “Comenzar” en la última página
+          // Botón Comenzar en la última página
           if (_paginaActual == _pages.length - 1)
             Positioned(
               bottom: 32,

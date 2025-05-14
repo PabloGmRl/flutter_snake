@@ -30,7 +30,6 @@ class _SnakePaginaPrincipalState extends State<SnakePaginaPrincipal> {
               );
             },
           ),
-          // IconButton de ajustes eliminado
         ],
       ),
       body: Center(
@@ -40,21 +39,7 @@ class _SnakePaginaPrincipalState extends State<SnakePaginaPrincipal> {
             // — Botón JUGAR —
             ElevatedButton(
               onPressed: () async {
-                final prefs = await SharedPreferences.getInstance();
-                final seen = prefs.getBool('seenSplash') ?? false;
-                if (!seen) {
-                  Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                      pageBuilder: (_, __, ___) => const PantallaTutorial(),
-                      transitionsBuilder: (_, anim, __, child) =>
-                          FadeTransition(opacity: anim, child: child),
-                    ),
-                  );
-                } else {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => const RejillaSnake()));
-                }
+                Navigator.push(context,MaterialPageRoute(builder: (_) => const RejillaSnake()));
               },
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
@@ -107,36 +92,10 @@ class _SnakePaginaPrincipalState extends State<SnakePaginaPrincipal> {
                   MaterialPageRoute(builder: (_) => const AjustesPagina()),
                 );
               },
-              // resto del estilo idéntico
               child: const Text('AJUSTES'),
             ),
           ],
         ),
-      ),
-    );
-  }
-  Widget _buildSettingsSheet(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            leading: const Icon(Icons.school),
-            title: const Text('Ver tutorial de nuevo'),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                PageRouteBuilder(
-                  pageBuilder: (_, __, ___) => const PantallaTutorial(),
-                  transitionsBuilder: (_, anim, __, child) =>
-                      FadeTransition(opacity: anim, child: child),
-                ),
-              );
-            },
-          ),
-        ],
       ),
     );
   }

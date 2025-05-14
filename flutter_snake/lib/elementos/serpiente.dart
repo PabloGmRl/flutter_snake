@@ -118,9 +118,8 @@ class Serpiente {
         _segmentos.removeAt(0);
       } else {
         // Serpiente no puede encoger más, ha perdido
-        throw SnakeDiedException(); // Lanza excepción personalizada
+        throw SnakeDiedException(); // Lanza excepción para perder
       }
     }
   }
-
 }

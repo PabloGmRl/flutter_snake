@@ -72,7 +72,7 @@ class _RejillaSnakeState extends State<RejillaSnake> with SingleTickerProviderSt
         snake.avanzar();
         _newSegments = List.from(snake.segmentos);
 
-        //Comprobamos Si hay Victoria
+        //Comprobamos victoria
 
         final totalCeldas = filas * columnas;
               if (snake.segmentos.length == totalCeldas) {
@@ -87,18 +87,17 @@ class _RejillaSnakeState extends State<RejillaSnake> with SingleTickerProviderSt
         for (final f in [...manzanas, ...fresas, ...poisons]) {
           if (f.position == cabeza) {
             try {
-              // ─── Aquí encogemos O crecemos, PERO tras avanzar ───
               f.applyEffect(snake);
               AudioManager.playEatSound();
               final diferencia = _oldSegments.length - snake.segmentos.length;
               if (diferencia > 0) {
-                //Recorta también los segmentos anteriores desde la cabeza
+                //Recorta también los segmentos anteriores desde la cabeza(para que la serpiente encoja)
                 _oldSegments = _oldSegments.sublist(diferencia);
               }
               _newSegments = List.from(snake.segmentos);
-              _onFruitEaten();  // ajusta velocidad si toca
+              _onFruitEaten();
 
-              // ─── Actualiza newSegments para reflejar el encoger ───
+              // Actualiza newSegments para que se vea que encoge
               _newSegments = List.from(snake.segmentos);
             } on SnakeDiedException {
               _controller.stop();
@@ -106,7 +105,7 @@ class _RejillaSnakeState extends State<RejillaSnake> with SingleTickerProviderSt
               return;
             }
 
-            // ─── Reposiciona la fruta ───
+            // Reposiciona la fruta
             final ocupadas = {
               ...snake.segmentos,
               ...manzanas.map((e) => e.position),
@@ -188,14 +187,14 @@ class _RejillaSnakeState extends State<RejillaSnake> with SingleTickerProviderSt
 
     return Scaffold(
       appBar: AppBar(
-        leadingWidth: 140, // MÁS espacio reservado
+        leadingWidth: 140,
         leading: Padding(
           padding: const EdgeInsets.only(left: 8.0),
           child: Align(
-            alignment: Alignment.centerLeft, // Botón pegado a la izquierda
+            alignment: Alignment.centerLeft,
             child: SizedBox(
-              width: 90,  // Botón más pequeño
-              height: 42,  // Botón más delgadito
+              width: 90,
+              height: 42,
               child: TextButton(
                 style: TextButton.styleFrom(
                   backgroundColor: Colors.redAccent,
