@@ -33,6 +33,8 @@ class _RejillaSnakeState extends State<RejillaSnake> with SingleTickerProviderSt
 
   bool _enPausa = false;
 
+  late Duration _duracionInicial; // 🔹 NUEVO
+
   @override
   void initState() {
     super.initState();
@@ -50,7 +52,8 @@ class _RejillaSnakeState extends State<RejillaSnake> with SingleTickerProviderSt
   }
 
   void _initAnimation() {
-    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
+    _duracionInicial = const Duration(milliseconds: 300); // 🔹 Guardamos duración inicial
+    _controller = AnimationController(vsync: this, duration: _duracionInicial);
     _animation = Tween(begin: 0.0, end: 1.0).animate(_controller)
       ..addListener(() => setState(() {}))
       ..addStatusListener((status) {
@@ -72,16 +75,16 @@ class _RejillaSnakeState extends State<RejillaSnake> with SingleTickerProviderSt
         snake.avanzar();
         _newSegments = List.from(snake.segmentos);
 
-        //Comprobamos victoria
-
+        // Comprobamos victoria
         final totalCeldas = filas * columnas;
-              if (snake.segmentos.length == totalCeldas) {
-                // toca sonido de victoria y abre diálogo
-                   AudioManager.playWinSound();
-                _controller.stop();
-                _mostrarVictoria();
-                return;
-              }
+        if (snake.segmentos.length == totalCeldas) {
+          // toca sonido de victoria y abre diálogo
+          AudioManager.playWinSound();
+          _controller.stop();
+          _mostrarVictoria();
+          return;
+        }
+
         // 4) AHORA sí miramos si la cabeza ha comido fruta
         final cabeza = snake.segmentos.last;
         for (final f in [...manzanas, ...fresas, ...poisons]) {
@@ -91,7 +94,7 @@ class _RejillaSnakeState extends State<RejillaSnake> with SingleTickerProviderSt
               AudioManager.playEatSound();
               final diferencia = _oldSegments.length - snake.segmentos.length;
               if (diferencia > 0) {
-                //Recorta también los segmentos anteriores desde la cabeza(para que la serpiente encoja)
+                // Recorta también los segmentos anteriores desde la cabeza (para que la serpiente encoja)
                 _oldSegments = _oldSegments.sublist(diferencia);
               }
               _newSegments = List.from(snake.segmentos);
@@ -370,6 +373,7 @@ class _RejillaSnakeState extends State<RejillaSnake> with SingleTickerProviderSt
     _newSegments = List.from(snake.segmentos);
     _longitudInicial = snake.segmentos.length;
     _finalizarFrutas();
+    _controller.duration = _duracionInicial; // 🔹 Restauramos velocidad inicial
     _controller.forward(from: 0.0);
     setState(() => _enPausa = false);
   }
@@ -438,5 +442,4 @@ class _RejillaSnakeState extends State<RejillaSnake> with SingleTickerProviderSt
       ),
     );
   }
-
 }
